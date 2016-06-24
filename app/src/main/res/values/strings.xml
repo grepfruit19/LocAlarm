@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">LocAlarm</string>
+    <string name="feedbacktitle">LocAlarm</string>
+    <string name="feedbackname">Input Address of Destination</string>
+</resources>
