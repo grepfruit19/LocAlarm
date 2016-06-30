@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.location.Location;
 import android.location.LocationManager;
+import android.view.View;
 import android.widget.EditText;
 
 import java.io.IOException;
@@ -23,32 +24,31 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity{
 public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=1;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    //Gets a reference to the system LocationManager
+    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    //Handles address to coords
+    Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+    //Will throw alarm
+    Intent intent = new Intent(SyncStateContract.Constants.ACTION_PROXIMITY_ALERT);
+    //Handles locations
+    LocationListener locationListener = new LocationListener(){
+        public void onLocationChanged(Location location){
+            //Called when a new location is found by the network location provider.
+            //makeUseOfNewLocation(location);
+        }
 
-        //Gets a reference to the system LocationManager
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        //Handles address to coords
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        //Will throw alarm
-        Intent intent = new Intent(SyncStateContract.Constants.ACTION_PROXIMITY_ALERT);
-        //Handles locations
-        LocationListener locationListener = new LocationListener(){
-            public void onLocationChanged(Location location){
-                //Called when a new location is found by the network location provider.
-                //makeUseOfNewLocation(location);
-            }
+        public void onStatusChanged(String provider, int status, Bundle extras){}
 
-            public void onStatusChanged(String provider, int status, Bundle extras){}
+        public void onProviderEnabled(String provider){}
 
-            public void onProviderEnabled(String provider){}
+        public void onProviderDisabled(String provider) {}
+    };
 
-            public void onProviderDisabled(String provider) {}
-        };
+
+    public void sendAddress(View view){
 
         //Some permission checkery
         int permissionCheck = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -64,7 +64,7 @@ public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=1;
         Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
         /* TODO: Sort out findViewByID*/
-        final EditText addressField = (EditText) findViewByID(R.id.EditTextName);
+        final EditText addressField = (EditText) findViewById(R.id.EditTextName);
         String destination = addressField.getText().toString();
 
         List<Address> addresses=null;
@@ -99,26 +99,26 @@ public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=1;
         //Checks when you enter the area.
         locationManager.addProximityAlert(destinationLat, destinationLong,500,-1,intent);
 
-        /*TODO:
-        https://developer.android.com/guide/topics/location/strategies.html
-        https://developer.android.com/training/location/index.html
-        https://developer.android.com/training/permissions/requesting.html ****
-        https://developer.android.com/reference/android/support/v4/app/ActivityCompat.html#requestPermissions(android.app.Activity, java.lang.String[], int)
-        */
-        /*
-        public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
-            switch (requestCode) {
-                case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                    if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                        //Permissions worked
-                    }
-                    else {
-                        //Close app, no permissions
-                    }
-                }
-            }
-        }*/
+    }
+    //TODO: FINISH THIS
+    //Wrapper for locManagers addProximityAlert
+    public void addProximityAlert(double latitude, double longitude, float radius, long expiration){
+        Intent intent = new Intent(PROX_ALERT_INTENT);
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
 
 
     }
+
+    @Override
+    public void showTextView(){
+        findViewById
+    }
+
+
 }
